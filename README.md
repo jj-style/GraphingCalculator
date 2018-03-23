@@ -21,3 +21,5 @@ Feel free to make pull requests and get graphing!
 <br /><br /><br />
 Screenshot of graphs:  
 ![multigraphs](https://user-images.githubusercontent.com/27488093/37825501-f4d42fc6-2e87-11e8-8196-48cac9590195.png)
+
+Licensed under the [MIT License](LICENSE).
