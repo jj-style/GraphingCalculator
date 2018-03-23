@@ -14,6 +14,6 @@ For example:
 (a+bx)/d in RPN would be 'a b x * + d /'  
 
 The operators which my program currently supports are:  
-+ - * / ^ ! sin cos tan  
+'+ - * / ^ ! sin cos tan'  
   
 Feel free to make pull requests and get graphing!
