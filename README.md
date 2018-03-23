@@ -1,5 +1,5 @@
 # GraphingCalculator
-Simple 2D graph plotter
+Simple 2D graph plotter made in python
 
 How to plot graphs:  
   Enter the equation of the line without the 'y ='  
