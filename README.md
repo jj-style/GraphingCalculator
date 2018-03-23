@@ -7,7 +7,7 @@ How to plot graphs:
   Multiple lines can be drawn, use a semicolon(;) to seperate the equations of the lines  
   Variable must be x, no other letters  
     
-Post-fix Notation  
+Post-fix Notation:  
 Post-fix notation, also known as Reverse Polish Notation (RPN) is simply a way of writing maths without the need for brackets. It is used as computers can evaluate results more easily in a stack without having to know the rules of BIDMAS.  
 In RPN the operator comes after the operand as opposed to inbetween, which is how we usually see it in in-fix.  
   
