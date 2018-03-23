@@ -17,3 +17,5 @@ The operators which my program currently supports are:
 '+ - * / ^ ! sin cos tan'  
   
 Feel free to make pull requests and get graphing!
+<br /><br /><br />
+Screenshot of graphs:  
