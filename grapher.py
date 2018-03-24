@@ -20,14 +20,7 @@ class tkWindow():
         self.e.pack()
         self.e.focus_set()
 
-        self.line_type = StringVar()
-        self.line_type.set("fill")
-        self.r1 = Radiobutton(master,text="fill",variable=self.line_type,value="fill")
-        self.r1.pack()
-        self.r2 = Radiobutton(master,text="dot",variable=self.line_type,value="dot")
-        self.r2.pack()
-
-        self.b = Button(master,text = "Draw",command = lambda: generateCoordinates(self.e.get(),self.line_type.get()))
+        self.b = Button(master,text = "Draw",command = lambda: generateCoordinates(self.e.get()))
         self.b.pack()
 
 class App():
@@ -74,7 +67,7 @@ def addAxis():
     pygame.draw.line(app.getScreen(), black, (0,app.screeny/2), (app.screenx,app.screeny/2),2)
     pygame.draw.line(app.getScreen(), black, (app.screenx/2,0), (app.screenx/2,app.screeny),2)
 
-def generateCoordinates(equation,line):
+def generateCoordinates(equation):
     lines = equation.split(";")
     coords = [[] for i in range(len(lines))]
     for eq in range(len(lines)):
@@ -86,21 +79,16 @@ def generateCoordinates(equation,line):
                 coords[eq].append((x,y))
             except:
                 pass
-    drawGraph(coords,equation,line)
+    drawGraph(coords,equation)
     
-def drawGraph(coords,equation,line):
+def drawGraph(coords,equation):
     app.begin(equation)
     while True:
         app.getScreen().fill(white)
         addAxis()
         for i in range(len(coords)):
             linecol = colours[i%len(colours)]
-            if line == "fill":
-                pygame.draw.lines(app.getScreen(),linecol,False,coords[i],2)
-            elif line == "dot":
-                for pos in coords[i]:
-                    app.getScreen().set_at(pos,linecol)
-                    #pygame.draw.circle(app.getScreen(),linecol,pos,1)
+            pygame.draw.lines(app.getScreen(),linecol,False,coords[i],2)
         pygame.display.update()
         app.getClock().tick(app.getTickSpeed())
         response = events()
