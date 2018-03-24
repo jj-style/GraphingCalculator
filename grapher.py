@@ -27,7 +27,7 @@ class tkWindow():
         self.r2 = Radiobutton(master,text="dot",variable=self.line_type,value="dot")
         self.r2.pack()
 
-        self.b = Button(master,text = "Draw",command = lambda: drawGraph(self.e.get(),self.line_type.get()))
+        self.b = Button(master,text = "Draw",command = lambda: generateCoordinates(self.e.get(),self.line_type.get()))
         self.b.pack()
 
 class App():
@@ -73,9 +73,8 @@ def events():
 def addAxis():
     pygame.draw.line(app.getScreen(), black, (0,app.screeny/2), (app.screenx,app.screeny/2),2)
     pygame.draw.line(app.getScreen(), black, (app.screenx/2,0), (app.screenx/2,app.screeny),2)
-                       
-def drawGraph(equation,line):
-    app.begin(equation)
+
+def generateCoordinates(equation,line):
     lines = equation.split(";")
     coords = [[] for i in range(len(lines))]
     for eq in range(len(lines)):
@@ -87,6 +86,10 @@ def drawGraph(equation,line):
                 coords[eq].append((x,y))
             except:
                 pass
+    drawGraph(coords,equation,line)
+    
+def drawGraph(coords,equation,line):
+    app.begin(equation)
     while True:
         app.getScreen().fill(white)
         addAxis()
@@ -177,4 +180,3 @@ def evaluateRPN(y,x):
 if __name__ == "__main__":
     app = App()
     main()
-    #print(evaluateRPN("x cos",1))
