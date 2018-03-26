@@ -88,7 +88,7 @@ def drawGraph(coords,equation):
         addAxis()
         for i in range(len(coords)):
             linecol = colours[i%len(colours)]
-            pygame.draw.lines(app.getScreen(),linecol,False,coords[i],2)
+            pygame.draw.aalines(app.getScreen(),linecol,False,coords[i],2)
         pygame.display.update()
         app.getClock().tick(app.getTickSpeed())
         response = events()
