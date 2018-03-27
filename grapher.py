@@ -118,7 +118,6 @@ def generateCoordinates(equation,equationpolar):
                     x = round((app.screenx / 2) + (r*math.cos(theta)))
                     coords[eq+len(lines)].append((x,y))
                 except:
-                    print("BIG ERROR")
                     pass
     drawGraph(coords,equation)
     
