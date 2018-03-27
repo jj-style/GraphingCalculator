@@ -1,5 +1,5 @@
 from tkinter import *
-import pygame
+import pygame, math
 
 white = (255,255,255)
 black = (0,0,0)
@@ -8,8 +8,7 @@ red = (255,0,0)
 green = (0,255,0)
 colours = [red,green,blue]
 
-
-pi = 3.14159265358979
+pi = math.pi
 
 #_______________________CLASSES___________________#
 class tkWindow():
@@ -102,8 +101,8 @@ def generateCoordinates(equation,equationpolar):
                     theta = i*pi/500
                     r = round(evaluateRPN(polarlines[eq],theta,'theta'))
                     #print(r,theta)
-                    y = round((app.screeny / 2) - (r*sine(theta)))
-                    x = round((app.screenx / 2) + (r*cosine(theta)))
+                    y = round((app.screeny / 2) - (r*math.sin(theta)))
+                    x = round((app.screenx / 2) + (r*math.cos(theta)))
                     coords[eq+len(lines)].append((x,y))
                 except:
                     print("BIG ERROR")
@@ -136,31 +135,12 @@ def factorial(n):
         return 1
     else:
         return n*factorial(n-1)
-    
-def sine(n):
-    y = 0
-    count = 0
-    for i in range(1,171,2):
-        y += ((-1)**count)*((n**i) / factorial(i))
-        count += 1
-    return y
-
-def cosine(n):
-    y = 0
-    count = 0
-    for i in range(0,172,2):
-        y += ((-1)**count)*((n**i) / factorial(i))
-        count += 1
-    return y
-
-def tangent(n):
-    return sine(n)/cosine(n)
-            
+                
 def evaluateRPN(y,x,variable):
     stack = Stack()
     eq = y.split(" ")
     d_operators = ["+","-","*","/","^"]
-    s_operators = ["sin","cos","tan","!"]
+    s_operators = ["sin","cos","tan","arcsin","arccos","arctan","!"]
     for i in range(len(eq)):
         if eq[i] == variable:
             eq[i] = x 
@@ -171,12 +151,18 @@ def evaluateRPN(y,x,variable):
             if i in s_operators:
                 a = float(stack.pop())
                 if i == s_operators[0]:
-                    stack.push(sine(a))
+                    stack.push(math.sin(a))
                 elif i == s_operators[1]:
-                    stack.push(cosine(a))
+                    stack.push(math.cos(a))
                 elif i == s_operators[2]:
-                    stack.push(tangent(a))
+                    stack.push(math.tan(a))
                 elif i == s_operators[3]:
+                    stack.push(math.asin(a))
+                elif i == s_operators[4]:
+                    stack.push(math.acos(a))
+                elif i == s_operators[5]:
+                    stack.push(math.atan(a))
+                elif i == s_operators[6]:
                     stack.push(factorial(a))
             elif i in d_operators:
                 b = float(stack.pop())
