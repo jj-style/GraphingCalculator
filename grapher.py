@@ -9,18 +9,28 @@ green = (0,255,0)
 colours = [red,green,blue]
 
 
+pi = 3.14159265358979
+
 #_______________________CLASSES___________________#
 class tkWindow():
     def __init__(self, master):
-        self.label = Label(master, text = "Equation of graph")
+        self.label = Label(master, text = "Equation of graph y = f(x)")
         self.label.pack()
 
         self.eq = StringVar()
         self.e = Entry(master,textvariable=self.eq,width=25)
         self.e.pack()
         self.e.focus_set()
+        
+        self.label2 = Label(master, text = "Equation of graph r = g(θ)")
+        self.label2.pack()
 
-        self.b = Button(master,text = "Draw",command = lambda: generateCoordinates(self.e.get()))
+        self.eq2 = StringVar()
+        self.e2 = Entry(master,textvariable=self.eq2,width=25)
+        self.e2.pack()
+        self.e2.focus_set()
+        
+        self.b = Button(master,text = "Draw",command = lambda: generateCoordinates(self.e.get(),self.e2.get()))
         self.b.pack()
 
 class App():
@@ -67,18 +77,37 @@ def addAxis():
     pygame.draw.line(app.getScreen(), black, (0,app.screeny/2), (app.screenx,app.screeny/2),2)
     pygame.draw.line(app.getScreen(), black, (app.screenx/2,0), (app.screenx/2,app.screeny),2)
 
-def generateCoordinates(equation):
+def generateCoordinates(equation,equationpolar):
     lines = equation.split(";")
-    coords = [[] for i in range(len(lines))]
-    for eq in range(len(lines)):
-        for x in range(app.screenx * -1,app.screenx):
-            try:
-                y = app.screeny-round(evaluateRPN(lines[eq],x/25))
-                y -= round(app.screeny / 2)
-                x += round(app.screenx / 2)
-                coords[eq].append((x,y))
-            except:
-                pass
+    polarlines = equationpolar.split(";")
+    if lines == ['']:
+        lines = []
+    if polarlines == ['']:
+        polarlines = []
+    coords = [[] for i in range(len(lines)+len(polarlines))]
+    if lines != []:
+        for eq in range(len(lines)):
+            for x in range(app.screenx * -1,app.screenx):
+                try:
+                    y = app.screeny-round(evaluateRPN(lines[eq],x/25,'x'))
+                    y -= round(app.screeny / 2)
+                    x += round(app.screenx / 2)
+                    coords[eq].append((x,y))
+                except:
+                    pass
+    if polarlines != []:
+        for eq in range(len(polarlines)):
+            for i in range(0,2000):
+                try:
+                    theta = i*pi/500
+                    r = round(evaluateRPN(polarlines[eq],theta,'theta'))
+                    #print(r,theta)
+                    y = round((app.screeny / 2) - (r*sine(theta)))
+                    x = round((app.screenx / 2) + (r*cosine(theta)))
+                    coords[eq+len(lines)].append((x,y))
+                except:
+                    print("BIG ERROR")
+                    pass
     drawGraph(coords,equation)
     
 def drawGraph(coords,equation):
@@ -127,13 +156,13 @@ def cosine(n):
 def tangent(n):
     return sine(n)/cosine(n)
             
-def evaluateRPN(y,x):
+def evaluateRPN(y,x,variable):
     stack = Stack()
     eq = y.split(" ")
     d_operators = ["+","-","*","/","^"]
     s_operators = ["sin","cos","tan","!"]
     for i in range(len(eq)):
-        if eq[i] == "x":
+        if eq[i] == variable:
             eq[i] = x 
     for i in eq:
         if i not in d_operators and i not in s_operators:
