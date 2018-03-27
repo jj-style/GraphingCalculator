@@ -66,11 +66,24 @@ class Stack():
         return len(self.array) == 0
 
 #__________________________MAIN STUFF____________________________#
+def saveImage():
+    root = Tk()
+    root.withdraw()
+    response = messagebox.askyesno("Save Image","Would you like to save an image of the graphs?")
+    root.update()
+    if response == True:
+        pygame.image.save(app.getScreen(),"graphs.png")
+    else:
+        return
+
 def events():
     direction = ""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_s:
+                saveImage()
 
 def addAxis():
     pygame.draw.line(app.getScreen(), black, (0,app.screeny/2), (app.screenx,app.screeny/2),2)
