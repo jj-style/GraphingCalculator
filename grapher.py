@@ -27,7 +27,6 @@ class tkWindow():
         self.eq2 = StringVar()
         self.e2 = Entry(master,textvariable=self.eq2,width=25)
         self.e2.pack()
-        self.e2.focus_set()
         
         self.b = Button(master,text = "Draw",command = lambda: generateCoordinates(self.e.get(),self.e2.get()))
         self.b.pack()
