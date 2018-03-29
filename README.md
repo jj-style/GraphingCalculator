@@ -5,7 +5,7 @@ How to plot graphs:
 Enter the equation of the line without the 'y =' or 'r =' 
 Equation must be in post-fix notation (see below) with spaces in between every operator/operand  
 Multiple lines can be drawn, use a semicolon(;) to seperate the equations of the lines  
-Variable must be 'x' for y=f(x) lines or 'theta' for r=g(θ) lines. No other letters will work
+Variable must be 'x' for y=f(x) lines or 'theta' for r=g(θ) lines. No other letters will work  
 Press 's' to save an image of the graph! 
     
 Post-fix Notation:  
