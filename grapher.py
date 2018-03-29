@@ -1,4 +1,3 @@
-#modify in git test
 from tkinter import *
 import pygame, math
 
