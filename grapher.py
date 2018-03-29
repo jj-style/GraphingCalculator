@@ -150,6 +150,7 @@ def factorial(n):
 def evaluateRPN(y,x,variable):
     stack = Stack()
     eq = y.split(" ")
+    eq = [x for x in eq if x]
     d_operators = ["+","-","*","/","^"]
     s_operators = ["sin","cos","tan","arcsin","arccos","arctan","!"]
     for i in range(len(eq)):
@@ -157,7 +158,7 @@ def evaluateRPN(y,x,variable):
             eq[i] = x 
     for i in eq:
         if i not in d_operators and i not in s_operators:
-            stack.push(i)
+            stack.push(float(i))
         else:
             if i in s_operators:
                 a = float(stack.pop())
