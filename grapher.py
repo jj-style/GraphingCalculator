@@ -76,7 +76,6 @@ def saveImage():
         return
 
 def events():
-    direction = ""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
@@ -118,6 +117,7 @@ def generateCoordinates(equation,equationpolar):
                     coords[eq+len(lines)].append((x,y))
                 except:
                     pass
+    equation = "y=("+";".join(lines)+"), r=("+";".join(polarlines)+")"
     drawGraph(coords,equation)
     
 def drawGraph(coords,equation):
@@ -191,7 +191,7 @@ def evaluateRPN(y,x,variable):
                     stack.push(a**b)
     return stack.pop() * 25
 
-#####################################################################
+######################################################################
 if __name__ == "__main__":
     app = App()
     main()
