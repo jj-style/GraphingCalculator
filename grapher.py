@@ -9,6 +9,7 @@ green = (0,127,0)
 colours = [red,green,blue]
 
 pi = math.pi
+e = math.e
 
 #_______________________CLASSES___________________#
 class tkWindow():
@@ -155,7 +156,11 @@ def evaluateRPN(y,x,variable):
     s_operators = ["sin","cos","tan","arcsin","arccos","arctan","!"]
     for i in range(len(eq)):
         if eq[i] == variable:
-            eq[i] = x 
+            eq[i] = x
+        elif eq[i] == 'e':
+            eq[i] = e
+        elif eq[i] == 'pi':
+            eq[i] = pi
     for i in eq:
         if i not in d_operators and i not in s_operators:
             stack.push(float(i))
