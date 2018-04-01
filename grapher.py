@@ -29,7 +29,7 @@ class tkWindow():
         self.e2 = Entry(master,textvariable=self.eq2,width=25)
         self.e2.pack()
         
-        self.b = Button(master,text = "Draw",command = lambda: generateCoordinates(self.e.get(),self.e2.get()))
+        self.b = Button(master,text = "Draw",command = lambda: drawGraph(self.e.get(),self.e2.get()))
         self.b.pack()
 
 class App():
@@ -37,6 +37,8 @@ class App():
         self.screenx = 300
         self.screeny = 300
         self.tickspeed = 20
+        self.xscale = 25
+        self.yscale = 25
     def begin(self,equation):
         pygame.init()
         pygame.display.set_caption(equation)
@@ -51,6 +53,16 @@ class App():
         return self.clock
     def getScreen(self):
         return self.screen
+    def getXScale(self):
+        return self.xscale
+    def getYScale(self):
+        return self.yscale
+    def setXScale(self,n):
+        if self.xscale+n > 0:
+            self.xscale += n
+    def setYScale(self,n):
+        if self.yscale+n > 0:
+            self.yscale += n
 
 class Stack():
     def __init__(self):
@@ -83,6 +95,15 @@ def events():
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_s:
                 saveImage()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 4:
+                app.setXScale(-5)
+                app.setYScale(-5)
+                return "scale" 
+            elif event.button == 5:
+                app.setXScale(5)
+                app.setYScale(5)
+                return "scale"
 
 def addAxis():
     pygame.draw.line(app.getScreen(), black, (0,app.screeny/2), (app.screenx,app.screeny/2),2)
@@ -100,7 +121,7 @@ def generateCoordinates(equation,equationpolar):
         for eq in range(len(lines)):
             for x in range(app.screenx * -1,app.screenx):
                 try:
-                    y = app.screeny-round(evaluateRPN(lines[eq],x/25,'x'))
+                    y = app.screeny-round(evaluateRPN(lines[eq],x/app.getXScale(),'x'))
                     y -= round(app.screeny / 2)
                     x += round(app.screenx / 2)
                     coords[eq].append((x,y))
@@ -118,11 +139,11 @@ def generateCoordinates(equation,equationpolar):
                     coords[eq+len(lines)].append((x,y))
                 except:
                     pass
-    equation = "y=("+";".join(lines)+"), r=("+";".join(polarlines)+")"
-    drawGraph(coords,equation)
+    return coords
     
-def drawGraph(coords,equation):
-    app.begin(equation)
+def drawGraph(equation,polarequation):
+    coords = generateCoordinates(equation,polarequation)
+    app.begin("y=("+";".join(equation.split(";"))+"), r=("+";".join(polarequation.split(";"))+")")
     while True:
         app.getScreen().fill(white)
         addAxis()
@@ -135,6 +156,8 @@ def drawGraph(coords,equation):
         if response == False:
             pygame.quit()
             return
+        elif response == "scale":
+            coords = generateCoordinates(equation,polarequation)
             
 def main():
     root = Tk()
@@ -194,7 +217,7 @@ def evaluateRPN(y,x,variable):
                     stack.push(a/b)
                 elif i == d_operators[4]:
                     stack.push(a**b)
-    return stack.pop() * 25
+    return stack.pop() * app.getYScale()
 
 ######################################################################
 if __name__ == "__main__":
