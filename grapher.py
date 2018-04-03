@@ -37,13 +37,13 @@ class App():
         self.screenx = 300
         self.screeny = 300
         self.tickspeed = 20
-        self.xscale = 25
-        self.yscale = 25
     def begin(self,equation):
         pygame.init()
         pygame.display.set_caption(equation)
         self.screen = pygame.display.set_mode((self.screenx, self.screeny))
         self.clock = pygame.time.Clock()
+        self.xscale = 25
+        self.yscale = 25
     def exitGame(self):
         pygame.quit()
         #quit()
@@ -97,12 +97,12 @@ def events():
                 saveImage()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:
-                app.setXScale(-5)
-                app.setYScale(-5)
+                app.setXScale(-2)
+                app.setYScale(-2)
                 return "scale" 
             elif event.button == 5:
-                app.setXScale(5)
-                app.setYScale(5)
+                app.setXScale(2)
+                app.setYScale(2)
                 return "scale"
 
 def addAxis():
@@ -142,8 +142,8 @@ def generateCoordinates(equation,equationpolar):
     return coords
     
 def drawGraph(equation,polarequation):
-    coords = generateCoordinates(equation,polarequation)
     app.begin("y=("+";".join(equation.split(";"))+"), r=("+";".join(polarequation.split(";"))+")")
+    coords = generateCoordinates(equation,polarequation)
     while True:
         app.getScreen().fill(white)
         addAxis()
