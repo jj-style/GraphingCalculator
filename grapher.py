@@ -28,8 +28,17 @@ class tkWindow():
         self.eq2 = StringVar()
         self.e2 = Entry(master,textvariable=self.eq2,width=25)
         self.e2.pack()
+
+        self.label3 = Label(master, text = "Parametric equation of graph x = f(t) y = f(t)")
+        self.label3.pack()
+        self.eq3a = StringVar()
+        self.e3a = Entry(master,textvariable=self.eq3a,width=25)
+        self.e3a.pack()
+        self.eq3b = StringVar()
+        self.e3b = Entry(master,textvariable=self.eq3b,width=25)
+        self.e3b.pack()
         
-        self.b = Button(master,text = "Draw",command = lambda: drawGraph(self.e.get(),self.e2.get()))
+        self.b = Button(master,text = "Draw",command = lambda: drawGraph(self.e.get(),self.e2.get(),self.e3a.get(),self.e3b.get()))
         self.b.pack()
 
 class App():
@@ -109,14 +118,20 @@ def addAxis():
     pygame.draw.line(app.getScreen(), black, (0,app.screeny/2), (app.screenx,app.screeny/2),2)
     pygame.draw.line(app.getScreen(), black, (app.screenx/2,0), (app.screenx/2,app.screeny),2)
 
-def generateCoordinates(equation,equationpolar):
+def generateCoordinates(equation,equationpolar,equationparaX,equationparaY):
     lines = equation.split(";")
     polarlines = equationpolar.split(";")
+    paraXlines = equationparaX.split(";")
+    paraYlines = equationparaY.split(";")
+    paralines = [paraXlines,paraYlines]
     if lines == ['']:
         lines = []
     if polarlines == ['']:
         polarlines = []
-    coords = [[] for i in range(len(lines)+len(polarlines))]
+    if (len(paralines[0]) != len(paralines[1])) or (paralines[0] == [''] and paralines[1] == ['']):
+        paralines[0] = []
+        paralines[1] = []
+    coords = [[] for i in range(len(lines)+len(polarlines)+len(paralines[0]))]
     if lines != []:
         for eq in range(len(lines)):
             for x in range(app.screenx * -1,app.screenx):
@@ -133,17 +148,28 @@ def generateCoordinates(equation,equationpolar):
                 try:
                     theta = i*pi/500
                     r = round(evaluateRPN(polarlines[eq],theta,'theta'))
-                    #print(r,theta)
                     y = round((app.screeny / 2) - (r*math.sin(theta)))
                     x = round((app.screenx / 2) + (r*math.cos(theta)))
                     coords[eq+len(lines)].append((x,y))
                 except:
                     pass
+    if paralines[0] != []:
+        for eq in range(len(paralines[0])):
+            for t in range(app.screenx * -1,app.screenx):
+                try:
+                    x = round(evaluateRPN(paralines[0][eq],t/app.getXScale(),'t'))
+                    x += round(app.screenx / 2)
+                    y = app.screeny-round(evaluateRPN(paralines[1][eq],t/app.getYScale(),'t'))
+                    y -= round(app.screeny / 2)
+                    coords[eq+len(lines)+len(polarlines)].append((x,y))
+                except:
+                    pass
     return coords
     
-def drawGraph(equation,polarequation):
-    app.begin("y=("+";".join(equation.split(";"))+"), r=("+";".join(polarequation.split(";"))+")")
-    coords = generateCoordinates(equation,polarequation)
+def drawGraph(equation,polarequation,equationparaX,equationparaY):
+    title = "y=("+";".join(equation.split(";"))+"), r=("+";".join(polarequation.split(";"))+"), (x=("+";".join(equationparaX.split(";"))+"),y=("+";".join(equationparaY.split(";"))+")"
+    app.begin(title)
+    coords = generateCoordinates(equation,polarequation,equationparaX,equationparaY)
     while True:
         app.getScreen().fill(white)
         addAxis()
@@ -157,7 +183,7 @@ def drawGraph(equation,polarequation):
             pygame.quit()
             return
         elif response == "scale":
-            coords = generateCoordinates(equation,polarequation)
+            coords = generateCoordinates(equation,polarequation,equationparaX,equationparaY)
             
 def main():
     root = Tk()
