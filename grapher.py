@@ -48,6 +48,7 @@ class App():
         self.tickspeed = 20
     def begin(self,equation):
         pygame.init()
+        pygame.mixer.quit()
         pygame.display.set_caption(equation)
         self.screen = pygame.display.set_mode((self.screenx, self.screeny))
         self.clock = pygame.time.Clock()
