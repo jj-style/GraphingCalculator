@@ -11,5 +11,5 @@ e theta cos ^ 2 4 theta * cos * -
   
   
 For parametric functions x(t) y(t):  
-equation  
+x = (4 t 30 + cos *) y = (2 t sin *)  
 ![cool_circle_parametric_graphs](https://user-images.githubusercontent.com/27488093/40799311-24a2fbe8-6505-11e8-95c7-7b77b5c307f0.png)
