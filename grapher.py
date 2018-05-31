@@ -92,7 +92,7 @@ class Stack():
 def saveImage():
     root = Tk()
     root.withdraw()
-    response = messagebox.askyesno("Save Image","Would you like to save an image of the graphs?")
+    response = tkinter.messagebox.askyesno("Save Image","Would you like to save an image of the graphs?")
     root.update()
     if response == True:
         pygame.image.save(app.getScreen(),"graphs.png")
@@ -169,7 +169,7 @@ def generateCoordinates(equation,equationpolar,equationparaX,equationparaY):
     return coords
     
 def drawGraph(equation,polarequation,equationparaX,equationparaY):
-    title = "y=("+";".join(equation.split(";"))+"), r=("+";".join(polarequation.split(";"))+"), (x=("+";".join(equationparaX.split(";"))+"),y=("+";".join(equationparaY.split(";"))+")"
+    title = "y=("+";".join(equation.split(";"))+"), r=("+";".join(polarequation.split(";"))+"), (x=("+";".join(equationparaX.split(";"))+"),y=("+";".join(equationparaY.split(";"))+"))"
     app.begin(title)
     coords = generateCoordinates(equation,polarequation,equationparaX,equationparaY)
     while True:
@@ -204,7 +204,7 @@ def evaluateRPN(y,x,variable):
     eq = y.split(" ")
     eq = [x for x in eq if x]
     d_operators = ["+","-","*","/","^"]
-    s_operators = ["sin","cos","tan","arcsin","arccos","arctan","!"]
+    s_operators = ["sin","cos","tan","arcsin","arccos","arctan","!","sqrt"]
     for i in range(len(eq)):
         if eq[i] == variable:
             eq[i] = x
@@ -232,6 +232,8 @@ def evaluateRPN(y,x,variable):
                     stack.push(math.atan(a))
                 elif i == s_operators[6]:
                     stack.push(factorial(a))
+                elif i == s_operators[7]:
+                    stack.push(math.sqrt(a))
             elif i in d_operators:
                 b = float(stack.pop())
                 a = float(stack.pop())
