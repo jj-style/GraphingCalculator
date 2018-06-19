@@ -204,7 +204,8 @@ def evaluateRPN(y,x,variable):
     eq = y.split(" ")
     eq = [x for x in eq if x]
     d_operators = ["+","-","*","/","^"]
-    s_operators = ["sin","cos","tan","arcsin","arccos","arctan","!","sqrt"]
+    #add logs --> math.log(x,base)
+    s_operators = ["sin","cos","tan","arcsin","arccos","arctan","!","sqrt","cosec","sec","cot"]
     for i in range(len(eq)):
         if eq[i] == variable:
             eq[i] = x
@@ -234,6 +235,12 @@ def evaluateRPN(y,x,variable):
                     stack.push(factorial(a))
                 elif i == s_operators[7]:
                     stack.push(math.sqrt(a))
+                elif i == s_operators[8]:
+                    stack.push(1/(math.sin(a)))
+                elif i == s_operators[9]:
+                    stack.push(1/(math.cos(a)))
+                elif i == s_operators[10]:
+                    stack.push(1/(math.tan(a)))
             elif i in d_operators:
                 b = float(stack.pop())
                 a = float(stack.pop())
