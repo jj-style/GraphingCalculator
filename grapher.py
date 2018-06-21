@@ -12,6 +12,8 @@ colours = [red,green,blue]
 pi = math.pi
 e = math.e
 
+shade = [False]
+
 #_______________________CLASSES___________________#
 class tkWindow():
     def __init__(self, master):
@@ -106,6 +108,8 @@ def events():
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_s:
                 saveImage()
+            elif event.key == pygame.K_r:
+                return "toggle shade"
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:
                 app.setXScale(-2)
@@ -178,6 +182,9 @@ def drawGraph(equation,polarequation,equationparaX,equationparaY):
         for i in range(len(coords)):
             linecol = colours[i%len(colours)]
             pygame.draw.aalines(app.getScreen(),linecol,False,coords[i],2)
+            if shade[0] == True:
+                for j in range(0,len(coords[i]),10):
+                    pygame.draw.line(app.getScreen(), black, coords[i][j], (coords[i][j][0],app.screeny/2),1)
         pygame.display.update()
         app.getClock().tick(app.getTickSpeed())
         response = events()
@@ -186,6 +193,11 @@ def drawGraph(equation,polarequation,equationparaX,equationparaY):
             return
         elif response == "scale":
             coords = generateCoordinates(equation,polarequation,equationparaX,equationparaY)
+        elif response == "toggle shade":
+            if shade[0] == False:
+                shade[0] = True
+            else:
+                shade[0] = False
             
 def main():
     root = Tk()
