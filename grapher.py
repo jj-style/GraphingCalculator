@@ -203,9 +203,12 @@ def evaluateRPN(y,x,variable):
     stack = Stack()
     eq = y.split(" ")
     eq = [x for x in eq if x]
-    d_operators = ["+","-","*","/","^"]
-    #add logs --> math.log(x,base)
-    s_operators = ["sin","cos","tan","arcsin","arccos","arctan","!","sqrt","cosec","sec","cot"]
+    d_operators = ["+","-","*","/","^","log"]
+    s_operators = ["sin","cos","tan",
+                   "arcsin","arccos","arctan",
+                   "cosec","sec","cot",
+                   "!","sqrt","|",
+                   "ln"]
     for i in range(len(eq)):
         if eq[i] == variable:
             eq[i] = x
@@ -232,15 +235,19 @@ def evaluateRPN(y,x,variable):
                 elif i == s_operators[5]:
                     stack.push(math.atan(a))
                 elif i == s_operators[6]:
-                    stack.push(factorial(a))
-                elif i == s_operators[7]:
-                    stack.push(math.sqrt(a))
-                elif i == s_operators[8]:
                     stack.push(1/(math.sin(a)))
-                elif i == s_operators[9]:
+                elif i == s_operators[7]:
                     stack.push(1/(math.cos(a)))
-                elif i == s_operators[10]:
+                elif i == s_operators[8]:
                     stack.push(1/(math.tan(a)))
+                elif i == s_operators[9]:
+                    stack.push(factorial(a))
+                elif i == s_operators[10]:
+                    stack.push(math.sqrt(a))
+                elif i == s_operators[11]:
+                    stack.push(abs(a))
+                elif i == s_operators[12]:
+                    stack.push(math.log(a,e))
             elif i in d_operators:
                 b = float(stack.pop())
                 a = float(stack.pop())
@@ -254,6 +261,8 @@ def evaluateRPN(y,x,variable):
                     stack.push(a/b)
                 elif i == d_operators[4]:
                     stack.push(a**b)
+                elif i == d_operators[5]:
+                    stack.push(math.log(a,b))
     return stack.pop() * app.getYScale()
 
 ######################################################################
