@@ -18,9 +18,10 @@ For example:
 The operators which the program currently supports are:  
 '+ - * / ^ ! sqrt sin cos tan arcsin arccos arctan cosec sec cot log ln |'  
   
-Important note:  
+**Important note:**  
 Modulus graphs '|' only require one modulus sign **after** the equation - only **1** is required.  
 Logs are entered in the format: 'x n log' - this is equivelant to log<sub>n</sub>x  
+Natural logs are in the format: 'x ln' - this is equivelant to ln x
   
   
   
