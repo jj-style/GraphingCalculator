@@ -16,7 +16,13 @@ For example:
 (a+bx)/d in RPN would be 'a b x * + d /'  
 
 The operators which the program currently supports are:  
-'+ - * / ^ ! sqrt sin cos tan arcsin arccos arctan cosec sec cot'  
+'+ - * / ^ ! sqrt sin cos tan arcsin arccos arctan cosec sec cot log ln |'  
+  
+Important note:  
+Modulus graphs '|' only require one modulus sign **after** the equation - only **1** is required.  
+Logs are entered in the format: 'x n log' - this is equivelant to log<sub>n</sub>x  
+  
+  
   
 Feel free to make pull requests and get graphing!
 <br /><br /><br />
