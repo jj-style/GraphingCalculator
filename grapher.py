@@ -24,7 +24,7 @@ class tkWindow():
         self.e = Entry(master,textvariable=self.eq,width=25)
         self.e.pack()
         self.e.focus_set()
-        
+
         self.label2 = Label(master, text = "Equation of graph r = g(θ)")
         self.label2.pack()
 
@@ -40,7 +40,7 @@ class tkWindow():
         self.eq3b = StringVar()
         self.e3b = Entry(master,textvariable=self.eq3b,width=25)
         self.e3b.pack()
-        
+
         self.b = Button(master,text = "Draw",command = lambda: drawGraph(self.e.get(),self.e2.get(),self.e3a.get(),self.e3b.get()))
         self.b.pack()
 
@@ -114,7 +114,7 @@ def events():
             if event.button == 4:
                 app.setXScale(-2)
                 app.setYScale(-2)
-                return "scale" 
+                return "scale"
             elif event.button == 5:
                 app.setXScale(2)
                 app.setYScale(2)
@@ -130,10 +130,8 @@ def generateCoordinates(equation,equationpolar,equationparaX,equationparaY):
     paraXlines = equationparaX.split(";")
     paraYlines = equationparaY.split(";")
     paralines = [paraXlines,paraYlines]
-    if lines == ['']:
-        lines = []
-    if polarlines == ['']:
-        polarlines = []
+    lines = [x for x in lines if x]
+    polarlines = [x for x in polarlines if x]
     if (len(paralines[0]) != len(paralines[1])) or (paralines[0] == [''] and paralines[1] == ['']):
         paralines[0] = []
         paralines[1] = []
@@ -143,6 +141,7 @@ def generateCoordinates(equation,equationpolar,equationparaX,equationparaY):
             for x in range(app.screenx * -1,app.screenx):
                 try:
                     y = app.screeny-round(evaluateRPN(lines[eq],x/app.getXScale(),'x'))
+                    print(y)
                     y -= round(app.screeny / 2)
                     x += round(app.screenx / 2)
                     coords[eq].append((x,y))
@@ -171,7 +170,7 @@ def generateCoordinates(equation,equationpolar,equationparaX,equationparaY):
                 except:
                     pass
     return coords
-    
+
 def drawGraph(equation,polarequation,equationparaX,equationparaY):
     title = "y=("+";".join(equation.split(";"))+"), r=("+";".join(polarequation.split(";"))+"), (x=("+";".join(equationparaX.split(";"))+"),y=("+";".join(equationparaY.split(";"))+"))"
     app.begin(title)
@@ -198,7 +197,7 @@ def drawGraph(equation,polarequation,equationparaX,equationparaY):
                 shade[0] = True
             else:
                 shade[0] = False
-            
+
 def main():
     root = Tk()
     myTK = tkWindow(root)
@@ -206,11 +205,11 @@ def main():
 
 #____________________________MATHS_______________________#
 def factorial(n):
-    if n == 0:
-        return 1
-    else:
-        return n*factorial(n-1)
-                
+    result = 1
+    for i in range(1,n+1):
+        result *= i
+    return result
+
 def evaluateRPN(y,x,variable):
     stack = Stack()
     eq = y.split(" ")
