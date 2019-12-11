@@ -12,8 +12,6 @@ colours = [red,green,blue]
 pi = math.pi
 e = math.e
 
-shade = [False]
-
 #_______________________CLASSES___________________#
 class tkWindow():
     def __init__(self, master):
@@ -57,6 +55,7 @@ class App():
         self.clock = pygame.time.Clock()
         self.xscale = 25
         self.yscale = 25
+        self.shade = False
     def exitGame(self):
         pygame.quit()
         #quit()
@@ -76,6 +75,10 @@ class App():
     def setYScale(self,n):
         if self.yscale+n > 0:
             self.yscale += n
+    def getShade(self):
+        return self.shade
+    def toggleShade(self):
+        self.shade ^= True
 
 class Stack():
     def __init__(self):
@@ -109,7 +112,7 @@ def events():
             if event.key == pygame.K_s:
                 saveImage()
             elif event.key == pygame.K_r:
-                return "toggle shade"
+                return "shade"
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:
                 app.setXScale(-2)
@@ -140,8 +143,7 @@ def generateCoordinates(equation,equationpolar,equationparaX,equationparaY):
         for eq in range(len(lines)):
             for x in range(app.screenx * -1,app.screenx):
                 try:
-                    y = app.screeny-round(evaluateRPN(lines[eq],x/app.getXScale(),'x'))
-                    print(y)
+                    y = app.screeny-round(evaluateRPN(lines[eq],x/app.getXScale(),'x') * app.getYScale())
                     y -= round(app.screeny / 2)
                     x += round(app.screenx / 2)
                     coords[eq].append((x,y))
@@ -152,7 +154,7 @@ def generateCoordinates(equation,equationpolar,equationparaX,equationparaY):
             for i in range(0,2000):
                 try:
                     theta = i*pi/500
-                    r = round(evaluateRPN(polarlines[eq],theta,'theta'))
+                    r = round(evaluateRPN(polarlines[eq],theta,'theta') * app.getYScale())
                     y = round((app.screeny / 2) - (r*math.sin(theta)))
                     x = round((app.screenx / 2) + (r*math.cos(theta)))
                     coords[eq+len(lines)].append((x,y))
@@ -162,9 +164,9 @@ def generateCoordinates(equation,equationpolar,equationparaX,equationparaY):
         for eq in range(len(paralines[0])):
             for t in range(app.screenx * -1,app.screenx):
                 try:
-                    x = round(evaluateRPN(paralines[0][eq],t/app.getXScale(),'t'))
+                    x = round(evaluateRPN(paralines[0][eq],t/app.getXScale(),'t')* app.getYScale())
                     x += round(app.screenx / 2)
-                    y = app.screeny-round(evaluateRPN(paralines[1][eq],t/app.getYScale(),'t'))
+                    y = app.screeny-round(evaluateRPN(paralines[1][eq],t/app.getYScale(),'t') * app.getYScale())
                     y -= round(app.screeny / 2)
                     coords[eq+len(lines)+len(polarlines)].append((x,y))
                 except:
@@ -181,7 +183,7 @@ def drawGraph(equation,polarequation,equationparaX,equationparaY):
         for i in range(len(coords)):
             linecol = colours[i%len(colours)]
             pygame.draw.aalines(app.getScreen(),linecol,False,coords[i],2)
-            if shade[0] == True:
+            if app.getShade() == True:
                 for j in range(0,len(coords[i]),10):
                     pygame.draw.line(app.getScreen(), black, coords[i][j], (coords[i][j][0],app.screeny/2),1)
         pygame.display.update()
@@ -192,11 +194,8 @@ def drawGraph(equation,polarequation,equationparaX,equationparaY):
             return
         elif response == "scale":
             coords = generateCoordinates(equation,polarequation,equationparaX,equationparaY)
-        elif response == "toggle shade":
-            if shade[0] == False:
-                shade[0] = True
-            else:
-                shade[0] = False
+        elif response == "shade":
+            app.toggleShade()
 
 def main():
     root = Tk()
@@ -274,7 +273,7 @@ def evaluateRPN(y,x,variable):
                     stack.push(a**b)
                 elif i == d_operators[5]:
                     stack.push(math.log(a,b))
-    return stack.pop() * app.getYScale()
+    return stack.pop()
 
 ######################################################################
 if __name__ == "__main__":
