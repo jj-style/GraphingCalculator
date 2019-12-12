@@ -90,10 +90,13 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     width, height = 400, 250
     input_window = EquationApp(width,height)
-    canvas_window = PlotCanvas(width, height)
+    pygame_window = PygameApp()
+    #canvas_window = PlotCanvas(width, height)
 
-    input_window.my_clicked.connect(canvas_window.click_get_coords)
-    input_window.my_clicked.connect(canvas_window.show)
+    #input_window.my_clicked.connect(canvas_window.click_get_coords)
+    #input_window.my_clicked.connect(canvas_window.show)
+
+    input_window.my_clicked.connect(pygame_window.drawGraph)
 
     input_window.show()
 

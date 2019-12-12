@@ -1,7 +1,149 @@
-import math
-
+import math, pygame
 pi = math.pi
 e = math.e
+
+white = (255,255,255)
+black = (0,0,0)
+blue = (0,0,255)
+red = (255,0,0)
+green = (0,127,0)
+colours = [red,green,blue]
+
+class PygameApp():
+    def __init__(self):
+        self.screenx = 300
+        self.screeny = 300
+        self.tickspeed = 20
+    def begin(self,equation):
+        pygame.init()
+        pygame.mixer.quit()
+        pygame.display.set_caption(equation)
+        self.screen = pygame.display.set_mode((self.screenx, self.screeny))
+        self.clock = pygame.time.Clock()
+        self.xscale = 25
+        self.yscale = 25
+        self.shade = False
+    def exitGame(self):
+        pygame.quit()
+        #quit()
+    def getTickSpeed(self):
+        return self.tickspeed
+    def getClock(self):
+        return self.clock
+    def getScreen(self):
+        return self.screen
+    def getXScale(self):
+        return self.xscale
+    def getYScale(self):
+        return self.yscale
+    def setXScale(self,n):
+        if self.xscale+n > 0:
+            self.xscale += n
+    def setYScale(self,n):
+        if self.yscale+n > 0:
+            self.yscale += n
+    def getShade(self):
+        return self.shade
+    def toggleShade(self):
+        self.shade ^= True
+
+    def events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                #self.exitGame()
+                return False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_s:
+                    pass
+                    #saveImage()
+                elif event.key == pygame.K_r:
+                    return "shade"
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 4:
+                    self.setXScale(-2)
+                    self.setYScale(-2)
+                    return "scale"
+                elif event.button == 5:
+                    self.setXScale(2)
+                    self.setYScale(2)
+                    return "scale"
+
+    def generateCoordinates(self, equation,equationpolar,equationparaX,equationparaY):
+        lines = equation.split(";")
+        polarlines = equationpolar.split(";")
+        paraXlines = equationparaX.split(";")
+        paraYlines = equationparaY.split(";")
+        paralines = [paraXlines,paraYlines]
+        lines = [x for x in lines if x]
+        polarlines = [x for x in polarlines if x]
+        if (len(paralines[0]) != len(paralines[1])) or (paralines[0] == [''] and paralines[1] == ['']):
+            paralines[0] = []
+            paralines[1] = []
+        coords = [[] for i in range(len(lines)+len(polarlines)+len(paralines[0]))]
+        if lines != []:
+            for eq in range(len(lines)):
+                for x in range(self.screenx * -1,self.screenx):
+                    try:
+                        y = self.screeny - round(evaluateRPN(lines[eq],x/self.xscale,'x')*self.yscale)
+                        y -= round(self.screeny / 2)
+                        x += round(self.screenx / 2)
+                        coords[eq].append((x,y))
+                    except Exception as e:
+                        print(e.args[0])
+                        pass
+        if polarlines != []:
+            for eq in range(len(polarlines)):
+                for i in range(0,2000):
+                    try:
+                        theta = i*pi/500
+                        r = round(evaluateRPN(polarlines[eq],theta,'theta') * self.yscale)
+                        y = round((self.screeny / 2) - (r*math.sin(theta)))
+                        x = round((self.screenx / 2) + (r*math.cos(theta)))
+                        coords[eq+len(lines)].append((x,y))
+                    except:
+                        pass
+        if paralines[0] != []:
+            for eq in range(len(paralines[0])):
+                for t in range(self.screenx * -1,self.screenx):
+                    try:
+                        x = round(evaluateRPN(paralines[0][eq],t/self.xscale,'t') * self.yscale)
+                        x += round(self.screenx / 2)
+                        y = self.screeny - round(evaluateRPN(paralines[1][eq],t/self.yscale,'t') * self.yscale)
+                        y -= round(self.screeny / 2)
+                        coords[eq+len(lines)+len(polarlines)].append((x,y))
+                    except:
+                        pass
+        return coords
+
+    def drawGraph(self, equation,polarequation,equationparaX,equationparaY):
+        title = "y=("+";".join(equation.split(";"))+"), r=("+";".join(polarequation.split(";"))+"), (x=("+";".join(equationparaX.split(";"))+"),y=("+";".join(equationparaY.split(";"))+"))"
+        self.begin(title)
+        coords = self.generateCoordinates(equation,polarequation,equationparaX,equationparaY)
+        while True:
+            self.getScreen().fill(white)
+            self.addAxis()
+            for i in range(len(coords)):
+                linecol = colours[i%len(colours)]
+                pygame.draw.aalines(self.getScreen(),linecol,False,coords[i],2)
+                if self.getShade() == True:
+                    for j in range(0,len(coords[i]),10):
+                        pygame.draw.line(self.getScreen(), black, coords[i][j], (coords[i][j][0],self.screeny/2),1)
+            pygame.display.update()
+            self.getClock().tick(self.getTickSpeed())
+            response = self.events()
+            if response == False:
+                pygame.quit()
+                return
+            elif response == "scale":
+                coords = self.generateCoordinates(equation,polarequation,equationparaX,equationparaY)
+            elif response == "shade":
+                self.toggleShade()
+
+    def addAxis(self):
+        pygame.draw.line(self.getScreen(), black, (0,self.screeny/2), (self.screenx,self.screeny/2),2)
+        pygame.draw.line(self.getScreen(), black, (self.screenx/2,0), (self.screenx/2,self.screeny),2)
+
+#_______________________MATHS_______________________#
 
 class Stack():
     def __init__(self):
@@ -16,48 +158,11 @@ class Stack():
     def isEmpty(self):
         return len(self.array) == 0
 
-def generateCoordinates(equation,equationpolar,equationparaX,equationparaY, width, height):
-    lines = equation.split(";")
-    polarlines = equationpolar.split(";")
-    paraXlines = equationparaX.split(";")
-    paraYlines = equationparaY.split(";")
-    paralines = [paraXlines,paraYlines]
-    lines = [x for x in lines if x]
-    polarlines = [x for x in polarlines if x]
-    if (len(paralines[0]) != len(paralines[1])) or (paralines[0] == [''] and paralines[1] == ['']):
-        paralines[0] = []
-        paralines[1] = []
-    coords = [[] for i in range(len(lines)+len(polarlines)+len(paralines[0]))]
-    if lines != []:
-        for eq in range(len(lines)):
-            for x in range(width * -1,width):
-                try:
-                    y = round(evaluateRPN(lines[eq],x,'x'))
-                    coords[eq].append((x,y))
-                except:
-                    pass
-    if polarlines != []:
-        for eq in range(len(polarlines)):
-            for i in range(0,2000):
-                try:
-                    theta = i*pi/500
-                    r = round(evaluateRPN(polarlines[eq],theta,'theta'))
-                    coords[eq+len(lines)].append((x,y))
-                except:
-                    pass
-    if paralines[0] != []:
-        for eq in range(len(paralines[0])):
-            for t in range(width * -1,width):
-                try:
-                    x = round(evaluateRPN(paralines[0][eq],t,'t'))
-                    y = round(evaluateRPN(paralines[1][eq],t,'t'))
-                    coords[eq+len(lines)+len(polarlines)].append((x,y))
-                except:
-                    pass
-    return coords
-
-#_______________________MATHS_______________________#
 def factorial(n):
+    if n < 0:
+        return 0
+    if n == 0:
+        return 1
     result = 1
     for i in range(1,n+1):
         result *= i
