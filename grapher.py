@@ -89,7 +89,6 @@ class PygameApp():
                         x += round(self.screenx / 2)
                         coords[eq].append((x,y))
                     except Exception as e:
-                        print(e.args[0])
                         pass
         if polarlines != []:
             for eq in range(len(polarlines)):
@@ -158,16 +157,6 @@ class Stack():
     def isEmpty(self):
         return len(self.array) == 0
 
-def factorial(n):
-    if n < 0:
-        return 0
-    if n == 0:
-        return 1
-    result = 1
-    for i in range(1,n+1):
-        result *= i
-    return result
-
 def evaluateRPN(y,x,variable):
     stack = Stack()
     eq = y.split(" ")
@@ -209,8 +198,6 @@ def evaluateRPN(y,x,variable):
                     stack.push(1/(math.cos(a)))
                 elif i == s_operators[8]:
                     stack.push(1/(math.tan(a)))
-                elif i == s_operators[9]:
-                    stack.push(factorial(a))
                 elif i == s_operators[10]:
                     stack.push(math.sqrt(a))
                 elif i == s_operators[11]:
